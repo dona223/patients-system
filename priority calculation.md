@@ -22,7 +22,7 @@ It is intended to be used in a hospital triage system.
 
 ---
 
-## ⚙Priority Calculation Code
+## Priority Calculation Code
 
 ```c
 #include <time.h>
