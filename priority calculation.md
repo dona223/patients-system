@@ -18,21 +18,93 @@ This module assigns medical priority to patients based on the presence of specif
 ## Priority Calculation Code
 
 ```c
-int calculate_priority_by_symptoms(int symptoms[], int n) {
-    // Symptom order:
-    // 0: Anaphylaxis, 1: Seizure, 2: Unconsciousness,
-    // 3: Fractures, 4: BrokenBone, 5: AllergicReaction,
-    // 6: Fever, 7: Cough, 8: Nausea, 9: Headache
+#include <time.h>
+#include <string.h>
+#include <stdio.h>
 
-    // Priority 1: Any critical symptom present
-    if (symptoms[0] || symptoms[1] || symptoms[2]) return 1;
+// Define constants
+#define SYMPTOM_COUNT 10
 
-    // Priority 2: Any trauma or severe reaction
-    if (symptoms[3] || symptoms[4] || symptoms[5]) return 2;
+// Symptom indices
+enum Symptom {
+    ANAPHYLAXIS = 0,
+    SEIZURE,
+    UNCONSCIOUSNESS,
+    FRACTURES,
+    BROKEN_BONE,
+    ALLERGIC_REACTION,
+    FEVER,
+    COUGH,
+    NAUSEA,
+    HEADACHE
+};
 
-    // Priority 3: Moderate symptoms
-    if (symptoms[6] || symptoms[7] || symptoms[8]) return 3;
+// Patient struct
+typedef struct Patient {
+    char ssn[20];
+    int age;
+    char dateIn[11];     // dd/mm/yyyy
+    char timeIn[6];      // hh:mm
+    int symptoms[SYMPTOM_COUNT];
+    int priority;
+    struct Patient* next;
+} Patient;
 
-    // Priority 4: Only mild symptoms (e.g., Headache or none)
+// Utility function to count symptoms (if needed later)
+int count_symptoms(int symptoms[], int n) {
+    int count = 0;
+    for (int i = 0; i < n; i++) {
+        count += symptoms[i];
+    }
+    return count;
+}
+
+// Assign priority based on specific symptom severity
+int calculate_priority_by_symptoms(Patient* p) {
+    // Check for critical life-threatening symptoms (Priority 1)
+    if (p->symptoms[ANAPHYLAXIS] ||
+        p->symptoms[SEIZURE] ||
+        p->symptoms[UNCONSCIOUSNESS]) {
+        return 1;
+    }
+
+    // Check for serious trauma or reaction (Priority 2)
+    if (p->symptoms[FRACTURES] ||
+        p->symptoms[BROKEN_BONE] ||
+        p->symptoms[ALLERGIC_REACTION]) {
+        return 2;
+    }
+
+    // Check for moderate symptoms (Priority 3)
+    if (p->symptoms[FEVER] ||
+        p->symptoms[COUGH] ||
+        p->symptoms[NAUSEA]) {
+        return 3;
+    }
+
+    // Otherwise, mild or no symptoms (Priority 4)
     return 4;
+}
+
+// Optional: DateTime parser and wait time calculator for later use
+void parse_datetime(const char* dateStr, const char* timeStr, struct tm* result) {
+    int day, month, year, hour, minute;
+    sscanf(dateStr, "%d/%d/%d", &day, &month, &year);
+    sscanf(timeStr, "%d:%d", &hour, &minute);
+
+    result->tm_mday = day;
+    result->tm_mon = month - 1;
+    result->tm_year = year - 1900;
+    result->tm_hour = hour;
+    result->tm_min = minute;
+    result->tm_sec = 0;
+    result->tm_isdst = -1;
+}
+
+double get_wait_hours(const char* dateStr, const char* timeStr) {
+    struct tm admit_tm;
+    parse_datetime(dateStr, timeStr, &admit_tm);
+    time_t admit_time = mktime(&admit_tm);
+    time_t now = time(NULL);
+    return difftime(now, admit_time) / 3600.0;
 }
