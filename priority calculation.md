@@ -15,7 +15,7 @@ It is intended to be used in a hospital triage system.
 
 | Priority | Level     | Conditions |
 |----------|-----------|------------|
-| **1**    | Critical | - Has **Chest Pain**<br>OR<br>- **6 or more symptoms**<br>OR<br>- **Age ≥ 75** and **≥ 4 symptoms**<br>OR<br>- **Waited ≥ 2 hours** |
+| **1**    | Critical | - Has **Chest Pain**<br>OR<br>- **6 or more symptoms**<br>OR<br>- **Age ≥ 60** and **≥ 4 symptoms**<br>OR<br>- **Waited ≥ 2 hours** |
 | **2**    | Urgent   | - 4–5 symptoms<br>OR<br>Age ≥ 70 and ≥ 2 symptoms<br>AND<br>No chest pain<br>AND<br>Wait < 2h |
 | **3**    | Normal   | - 2–3 symptoms<br>AND<br>Age < 70<br>AND<br>No chest pain<br>AND<br>Wait < 2h |
 | **4**    | Low      | - 0–1 symptom<br>AND<br>No critical signs |
