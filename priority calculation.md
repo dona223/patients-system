@@ -17,7 +17,6 @@ This module assigns medical priority to patients based on the presence of specif
 
 ## Priority Calculation Code
 
-```c
 #include <time.h>
 #include <string.h>
 #include <stdio.h>
@@ -59,34 +58,30 @@ int count_symptoms(int symptoms[], int n) {
     return count;
 }
 
-// Assign priority based on specific symptom severity
+// Assign priority based on 3-level severity
 int calculate_priority_by_symptoms(Patient* p) {
-    // Check for critical life-threatening symptoms (Priority 1)
+    // Priority 1: Life-threatening or severe trauma
     if (p->symptoms[ANAPHYLAXIS] ||
         p->symptoms[SEIZURE] ||
-        p->symptoms[UNCONSCIOUSNESS]) {
+        p->symptoms[UNCONSCIOUSNESS] ||
+        p->symptoms[FRACTURES] ||
+        p->symptoms[BROKEN_BONE]) {
         return 1;
     }
 
-    // Check for serious trauma or reaction (Priority 2)
-    if (p->symptoms[FRACTURES] ||
-        p->symptoms[BROKEN_BONE] ||
-        p->symptoms[ALLERGIC_REACTION]) {
+    // Priority 2: Moderate symptoms or allergic reaction
+    if (p->symptoms[ALLERGIC_REACTION] ||
+        p->symptoms[FEVER] ||
+        p->symptoms[COUGH] ||
+        p->symptoms[NAUSEA]) {
         return 2;
     }
 
-    // Check for moderate symptoms (Priority 3)
-    if (p->symptoms[FEVER] ||
-        p->symptoms[COUGH] ||
-        p->symptoms[NAUSEA]) {
-        return 3;
-    }
-
-    // Otherwise, mild or no symptoms (Priority 4)
-    return 4;
+    // Priority 3: Mild symptoms or no symptoms
+    return 3;
 }
 
-// Optional: DateTime parser and wait time calculator for later use
+// Optional: DateTime parser and wait time calculator
 void parse_datetime(const char* dateStr, const char* timeStr, struct tm* result) {
     int day, month, year, hour, minute;
     sscanf(dateStr, "%d/%d/%d", &day, &month, &year);
@@ -108,3 +103,4 @@ double get_wait_hours(const char* dateStr, const char* timeStr) {
     time_t now = time(NULL);
     return difftime(now, admit_time) / 3600.0;
 }
+
